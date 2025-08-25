@@ -1,1 +1,76 @@
+import os
+import shutil
+import tkinter as tk
+from tkinter import filedialog, messagebox
+
+# File type categories
+file_types = {
+    "Images": [".jpg", ".jpeg", ".png", ".gif"],
+    "Videos": [".mp4", ".mkv", ".avi"],
+    "Documents": [".pdf", ".docx", ".txt", ".pptx"],
+    "Audio": [".mp3", ".wav"],
+    "Compressed": [".zip", ".rar", ".7z"]
+}
+
+# Function to organize files
+def organize_files():
+    source_folder = folder_path.get()
+    if not source_folder or not os.path.exists(source_folder):
+        messagebox.showerror("Error", "Please select a valid folder!")
+        return
+
+    # Create subfolders if not exist
+    for folder in file_types.keys():
+        folder_path_ = os.path.join(source_folder, folder)
+        if not os.path.exists(folder_path_):
+            os.makedirs(folder_path_)
+
+    # Move files
+    for file in os.listdir(source_folder):
+        file_path = os.path.join(source_folder, file)
+        if os.path.isfile(file_path):
+            _, ext = os.path.splitext(file)
+            moved = False
+            for folder, extensions in file_types.items():
+                if ext.lower() in extensions:
+                    shutil.move(file_path, os.path.join(source_folder, folder, file))
+                    moved = True
+                    break
+            if not moved:
+                other_folder = os.path.join(source_folder, "Others")
+                if not os.path.exists(other_folder):
+                    os.makedirs(other_folder)
+                shutil.move(file_path, os.path.join(other_folder, file))
+
+    messagebox.showinfo("Success", "✅ Files Organized Successfully!")
+
+# Function to select folder
+def browse_folder():
+    folder_selected = filedialog.askdirectory()
+    folder_path.set(folder_selected)
+
+# GUI Setup
+root = tk.Tk()
+root.title("📂 File Organizer")
+root.geometry("500x200")
+root.resizable(False, False)
+
+# Folder Path Input
+folder_path = tk.StringVar()
+
+tk.Label(root, text="Select Folder to Organize:", font=("Arial", 12)).pack(pady=10)
+frame = tk.Frame(root)
+frame.pack()
+
+entry = tk.Entry(frame, textvariable=folder_path, width=40)
+entry.pack(side=tk.LEFT, padx=5)
+
+browse_btn = tk.Button(frame, text="Browse", command=browse_folder)
+browse_btn.pack(side=tk.LEFT)
+
+# Organize Button
+organize_btn = tk.Button(root, text="Organize Files", command=organize_files, bg="green", fg="white", font=("Arial", 12))
+organize_btn.pack(pady=20)
+
+root.mainloop()
 
