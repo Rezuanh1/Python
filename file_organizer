@@ -3,7 +3,7 @@ import shutil
 import tkinter as tk
 from tkinter import filedialog, messagebox
 
-# File type categories
+
 file_types = {
     "Images": [".jpg", ".jpeg", ".png", ".gif"],
     "Videos": [".mp4", ".mkv", ".avi"],
@@ -12,20 +12,20 @@ file_types = {
     "Compressed": [".zip", ".rar", ".7z"]
 }
 
-# Function to organize files
+
 def organize_files():
     source_folder = folder_path.get()
     if not source_folder or not os.path.exists(source_folder):
         messagebox.showerror("Error", "Please select a valid folder!")
         return
 
-    # Create subfolders if not exist
+    
     for folder in file_types.keys():
         folder_path_ = os.path.join(source_folder, folder)
         if not os.path.exists(folder_path_):
             os.makedirs(folder_path_)
 
-    # Move files
+    
     for file in os.listdir(source_folder):
         file_path = os.path.join(source_folder, file)
         if os.path.isfile(file_path):
@@ -44,18 +44,18 @@ def organize_files():
 
     messagebox.showinfo("Success", "✅ Files Organized Successfully!")
 
-# Function to select folder
+
 def browse_folder():
     folder_selected = filedialog.askdirectory()
     folder_path.set(folder_selected)
 
-# GUI Setup
+
 root = tk.Tk()
 root.title("📂 File Organizer")
 root.geometry("500x200")
 root.resizable(False, False)
 
-# Folder Path Input
+
 folder_path = tk.StringVar()
 
 tk.Label(root, text="Select Folder to Organize:", font=("Arial", 12)).pack(pady=10)
@@ -68,9 +68,8 @@ entry.pack(side=tk.LEFT, padx=5)
 browse_btn = tk.Button(frame, text="Browse", command=browse_folder)
 browse_btn.pack(side=tk.LEFT)
 
-# Organize Button
+
 organize_btn = tk.Button(root, text="Organize Files", command=organize_files, bg="green", fg="white", font=("Arial", 12))
 organize_btn.pack(pady=20)
 
 root.mainloop()
-
